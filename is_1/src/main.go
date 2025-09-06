@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 )
 
@@ -21,13 +22,15 @@ func GenerateRotor(alphabetSize int) []byte {
 }
 
 func GenerateReflector(alphabetSize int) []byte {
-	reflector := GenerateRotor(alphabetSize)
-	// Гарантируем свойство инволюции: reflector[reflector[i]] == i
-	for i := 0; i < 256; i++ {
-		if reflector[reflector[i]] != byte(i) {
-			j := reflector[i]
-			reflector[i], reflector[j] = reflector[j], reflector[i]
-		}
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	var half int = alphabetSize / 2
+	firstPerm := r.Perm(half)
+	secPerm := r.Perm(half)
+
+	reflector := make([]byte, alphabetSize)
+	for i := range alphabetSize / 2 {
+		reflector[firstPerm[i]] = byte(half + secPerm[i])
+		reflector[half+secPerm[i]] = byte(firstPerm[i])
 	}
 	return reflector
 }
@@ -57,55 +60,61 @@ var (
 )
 
 var (
+	Reflector256   = []byte{138, 202, 153, 170, 248, 147, 144, 215, 230, 219, 172, 132, 246, 187, 239, 169, 255, 218, 237, 244, 139, 200, 221, 155, 174, 168, 222, 242, 150, 188, 231, 190, 145, 223, 241, 158, 208, 184, 128, 236, 243, 180, 207, 225, 161, 159, 211, 238, 196, 210, 251, 141, 185, 183, 143, 216, 195, 175, 214, 140, 182, 201, 192, 148, 212, 157, 134, 129, 130, 227, 232, 189, 181, 204, 151, 220, 229, 233, 137, 162, 249, 213, 206, 234, 197, 179, 173, 224, 209, 177, 135, 199, 194, 186, 253, 136, 165, 226, 240, 235, 156, 163, 154, 167, 146, 228, 198, 254, 164, 152, 245, 217, 160, 193, 205, 203, 250, 131, 171, 252, 149, 166, 142, 133, 191, 178, 176, 247, 38, 67, 68, 117, 11, 123, 66, 90, 95, 78, 0, 20, 59, 51, 122, 54, 6, 32, 104, 5, 63, 120, 28, 74, 109, 2, 102, 23, 100, 65, 35, 45, 112, 44, 79, 101, 108, 96, 121, 103, 25, 15, 3, 118, 10, 86, 24, 57, 126, 89, 125, 85, 41, 72, 60, 53, 37, 52, 93, 13, 29, 71, 31, 124, 62, 113, 92, 56, 48, 84, 106, 91, 21, 61, 1, 115, 73, 114, 82, 42, 36, 88, 49, 46, 64, 81, 58, 7, 55, 111, 17, 9, 75, 22, 26, 33, 87, 43, 97, 69, 105, 76, 8, 30, 70, 77, 83, 99, 39, 18, 47, 14, 98, 34, 27, 40, 19, 110, 12, 127, 4, 80, 116, 50, 119, 94, 107, 16}
 	ReflectorB     = [alphabetSize]int{24, 17, 20, 7, 16, 18, 11, 3, 15, 23, 13, 6, 14, 10, 12, 8, 4, 1, 5, 25, 2, 22, 21, 9, 0, 19}
 	ReflectorC     = [alphabetSize]int{5, 21, 15, 9, 8, 0, 14, 3, 4, 7, 17, 25, 23, 22, 6, 2, 19, 10, 20, 16, 18, 1, 13, 12, 24, 11}
 	ReflectorBDunn = [alphabetSize]int{4, 13, 10, 16, 0, 20, 6, 24, 19, 17, 22, 25, 21, 1, 18, 23, 3, 9, 14, 8, 5, 12, 11, 15, 7, 2}
 	ReflectorCDunn = [alphabetSize]int{17, 3, 14, 1, 9, 13, 19, 10, 21, 4, 22, 25, 23, 20, 2, 18, 7, 0, 16, 6, 12, 8, 11, 24, 15, 5}
 )
 
+func GenerateReflector_test() {
+	ref := GenerateReflector(alphabetSize)
+	tmp := make([]byte, alphabetSize)
+	for i := range alphabetSize {
+		tmp[i] = byte(i)
+	}
+	fmt.Println(tmp)
+	fmt.Println(ref)
+}
+
 func main() {
-	// if len(os.Args) < 3 {
-	// 	fmt.Println("Usage: enigma input.txt output.txt")
-	// 	os.Exit(1)
-	// }
-	// inputFileName := os.Args[1]
-	// outputFIlename := os.Args[2]
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: enigma input.txt output.txt")
+		os.Exit(1)
+	}
+	inputFileName := os.Args[1]
+	outputFIlename := os.Args[2]
 
-	// inputFile, err := os.Open(inputFileName)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
-	// defer inputFile.Close()
+	// inputFileName := "../data/input.txt"
+	// outputFIlename := "../data/output.txt"
 
-	// inputData := make([]byte, 100)
-	// err = nil
-	// for err == nil {
-	// 	_, err = inputFile.Read(inputData)
-	// }
-	// if err != io.EOF {
-	// 	fmt.Println(err)
-	// 	os.Exit(1)
-	// }
+	inputData, err := os.ReadFile(inputFileName)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
-	// rotorN := TypeRotor256 // GenerateRotor(256)
-	fmt.Print(GenerateReflector(256))
+	rotors := []Rotor{
+		NewRotor(TypeRotor256_1, 'Q', 0),
+		NewRotor(TypeRotor256_2, 'U', 0),
+		NewRotor(TypeRotor256_2, '8', 0),
+	}
+	reflector := NewReflector(Reflector256)
+	enigm := NewEnigma(rotors, reflector)
 
-	// posRing := []int{'Q', 'U', 'C'}
-
-	// rotors := []Rotor{
-	// 	NewRotor(TypeRotor256_1, 'R', 0),
-	// 	NewRotor(TypeRotor256_2, 'U', 0),
-	// 	// NewRotor(TypeRotor3, TypeSteppingPos3, 0),
-	// }
-	// reflector := NewReflector(ReflectorB)
-	// enigm := NewEnigma(rotors, reflector)
-
-	// enigm.SetRotorPositions(posRing)
-	// text1 := enigm.EncryptText("ABC - abc")
+	posRing := []byte{'Q', '8', '8'}
+	enigm.SetRotorPositions(posRing)
+	// text1 := enigm.EncryptText([]byte("ABC - abc 12345678 |||| !!"))
+	// text1 := enigm.EncryptText([]byte{97})
+	encryptedText := enigm.EncryptText(inputData)
 
 	// enigm.SetRotorPositions(posRing)
 	// text2 := enigm.EncryptText(text1)
 	// fmt.Printf("%s\n%s\n", text1, text2)
 
+	err = os.WriteFile(outputFIlename, encryptedText, 0666)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }

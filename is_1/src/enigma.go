@@ -2,8 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"strings"
 )
 
 var (
@@ -12,7 +10,7 @@ var (
 
 type Enigma interface {
 	EncryptAlpha(alpha byte) byte
-	EncryptText(text []byte) string
+	EncryptText(text []byte) []byte
 	SetRotorPositions(poses []byte) error
 }
 
@@ -28,25 +26,14 @@ func NewEnigma(rotors []Rotor, reflector Reflector) Enigma {
 	}
 }
 
-func (e *enigma) EncryptText(text []byte) string {
-	var strBuilder strings.Builder
-	strBuilder.Grow(len(text))
-	for _, v := range text {
-		encrypted := e.EncryptAlpha(v)
-		strBuilder.WriteByte(byte(encrypted))
-		// switch {
-		// case 'A' <= v && v <= 'Z':
-		// 	encrypted := e.EncryptAlpha(int(v - 'A'))
-		// 	strBuilder.WriteByte(byte('A' + encrypted))
-		// case 'a' <= v && v <= 'z':
-		// 	encrypted := e.EncryptAlpha(int(v - 'a'))
-		// 	strBuilder.WriteByte(byte('a' + encrypted))
-		// default:
-		// 	strBuilder.WriteRune(v)
-		// }
-
+func (e *enigma) EncryptText(text []byte) []byte {
+	resText := make([]byte, len(text))
+	// var strBuilder strings.Builder
+	// strBuilder.Grow(len(text))
+	for i, v := range text {
+		resText[i] = e.EncryptAlpha(v)
 	}
-	return strBuilder.String()
+	return resText
 }
 
 func (e *enigma) EncryptAlpha(alpha byte) byte {
@@ -55,32 +42,32 @@ func (e *enigma) EncryptAlpha(alpha byte) byte {
 	nextA := e.rotors[0].Transform(alpha, 0)
 	lastRing := e.rotors[0].GetRing()
 
-	fmt.Printf("%c -> %c\n", alpha+'A', nextA+'A')
-	var tmp byte
+	// fmt.Printf("%c -> %c\n", alpha+'A', nextA+'A')
+	// var tmp byte
 	for i := 1; i < Nrotors; i++ {
 		if e.rotors[i-1].GetRing() == e.rotors[i-1].GetSteppingPos() {
 			e.rotors[i].Rotate()
 		}
-		tmp = nextA
+		// tmp = nextA
 		nextA = e.rotors[i].Transform(nextA, lastRing)
 		lastRing = e.rotors[i].GetRing()
-		fmt.Printf("%c -> %c\n", tmp+'A', nextA+'A')
+		// fmt.Printf("%c -> %c\n", tmp+'A', nextA+'A')
 	}
 
-	tmp = nextA
+	// tmp = nextA
 	nextA = e.reflector.Transform(nextA, lastRing, -1)
-	fmt.Printf("ref: %c -> %c\n", tmp+'A', nextA+'A')
+	// fmt.Printf("ref: %c -> %c\n", tmp+'A', nextA+'A')
 
 	lastRing = 0
 	for i := len(e.rotors) - 1; i >= 0; i-- {
-		tmp = nextA
+		// tmp = nextA
 		nextA = e.rotors[i].TransformBack(nextA, lastRing)
 		lastRing = e.rotors[i].GetRing()
-		fmt.Printf("%c -> %c\n", tmp+'A', nextA+'A')
+		// fmt.Printf("%c -> %c\n", tmp+'A', nextA+'A')
 	}
-	tmp = nextA
+	// tmp = nextA
 	nextA = byte((int(nextA) - int(lastRing) + alphabetSize) % alphabetSize)
-	fmt.Printf("%c -> %c\n", tmp+'A', nextA+'A')
+	// fmt.Printf("%c -> %c\n", tmp+'A', nextA+'A')
 	return nextA
 }
 

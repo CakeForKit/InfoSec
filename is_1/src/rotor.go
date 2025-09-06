@@ -17,9 +17,9 @@ type rotor struct {
 }
 
 func NewRotor(permutation []byte, steppingPos byte, ring byte) Rotor {
-	var rePermutation []byte
+	rePermutation := make([]byte, len(permutation))
 	for i, v := range permutation {
-		rePermutation[v] = byte(i)
+		rePermutation[int(v)] = byte(i)
 	}
 	return &rotor{
 		permutation:   permutation,
