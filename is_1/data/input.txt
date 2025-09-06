@@ -1,1 +1,1 @@
------ ABC - abc 12345678 |||| touch input.txt
+----- ABC - abc 12345.... 678 |||| touch input.txt
