@@ -2,10 +2,10 @@ GOCMD=go
 SRC=src/*.go
 
 run: enigma.exe
-	./enigma.exe ./data/byte.txt  ./data/outputEncr.txt  
+	./enigma.exe ./data/input.txt  ./data/outputEncr.txt  
 	./enigma.exe ./data/outputEncr.txt  ./data/outputDecr.txt  
 
-enigma.exe:
+enigma.exe: $(SRC)
 	$(GOCMD) build -o enigma.exe $(SRC)
 
 clean:

@@ -67,13 +67,14 @@ func main() {
 		os.Exit(1)
 	}
 
+	switchingPanel := NewRotor(TypeRotor256_1, '0', 0)
 	rotors := []Rotor{
 		NewRotor(TypeRotor256_1, '1', 0),
 		NewRotor(TypeRotor256_2, '-', 0),
 		NewRotor(TypeRotor256_3, ' ', 0),
 	}
 	reflector := NewReflector(Reflector256_2)
-	enigm := NewEnigma(rotors, reflector)
+	enigm := NewEnigma(switchingPanel, rotors, reflector)
 
 	posRing := []byte{'Q', '8', '8'}
 	enigm.SetRotorPositions(posRing)

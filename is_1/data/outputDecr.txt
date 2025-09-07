@@ -1,1 +1,2 @@
-A
+----- ABC - abc 12345.... 678 |||| touch 
+input.txt

@@ -4,6 +4,8 @@ type Rotor interface {
 	Rotate()
 	Transform(alpha byte, nextRing byte) byte
 	TransformBack(alpha byte, nextRing byte) byte
+	SwitchTo(alpha byte) byte
+	SwitchFrom(alpha byte) byte
 	GetRing() byte
 	SetRing(ring byte)
 	GetSteppingPos() byte
@@ -47,6 +49,14 @@ func (r *rotor) TransformBack(alpha byte, nextRing byte) byte {
 	pr := int(nextRing)
 	intputAlpha := (a - (pr - int(r.ring)) + alphabetSize) % alphabetSize
 	return r.rePermutation[intputAlpha]
+}
+
+func (r *rotor) SwitchTo(alpha byte) byte {
+	return r.permutation[alpha]
+}
+
+func (r *rotor) SwitchFrom(alpha byte) byte {
+	return r.rePermutation[alpha]
 }
 
 func (r *rotor) GetRing() byte {
