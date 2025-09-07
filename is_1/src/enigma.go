@@ -30,8 +30,6 @@ func NewEnigma(switchingPanel Rotor, rotors []Rotor, reflector Reflector) Enigma
 
 func (e *enigma) EncryptText(text []byte) []byte {
 	resText := make([]byte, len(text))
-	// var strBuilder strings.Builder
-	// strBuilder.Grow(len(text))
 	for i, v := range text {
 		resText[i] = e.EncryptAlpha(v)
 	}
