@@ -78,14 +78,7 @@ func main() {
 
 	posRing := []byte{'Q', '8', '8'}
 	enigm.SetRotorPositions(posRing)
-	// text1 := enigm.EncryptText([]byte("ABC - abc 12345678 |||| !!"))
-	// text1 := enigm.EncryptText([]byte{97})
 	encryptedText := enigm.EncryptText(inputData)
-
-	// enigm.SetRotorPositions(posRing)
-	// text2 := enigm.EncryptText(text1)
-	// fmt.Printf("%s\n%s\n", text1, text2)
-
 	err = os.WriteFile(outputFIlename, encryptedText, 0666)
 	if err != nil {
 		fmt.Println(err)

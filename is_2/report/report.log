@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.9.18)  7 SEP 2025 18:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2024.9.18)  14 SEP 2025 14:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1791,7 +1791,7 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count322
 \l__pdf_internal_box=\box69
 ) (report.aux (00_title.aux) (02_intro.aux) (03_analytic_part.aux)
-(07_conclusion.aux))
+(07_conclusion.aux) (links.aux))
 \openout1 = `report.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
@@ -1965,7 +1965,7 @@ Package hyperref Info: Link coloring OFF on input line 9.
 \openout2 = `00_title.aux'.
 
  (00_title.tex
-<img/b_logo.png, id=25, 1741.50626pt x 2055.68pt>
+<img/b_logo.png, id=33, 1741.50626pt x 2055.68pt>
 File: img/b_logo.png Graphic file (type png)
 <use img/b_logo.png>
 Package pdftex.def Info: img/b_logo.png  used on input line 4.
@@ -2090,17 +2090,45 @@ LaTeX Font Info:    Font shape `T2A/Tempora-TLF/b/n' will be
 
 
 
-] [5]
+]
 {\cyrillictext \CYRG \cyrl \cyra \cyrv \cyra } 2.
-<img/enigma_algo.png, id=54, 500.62032pt x 694.84593pt>
+<img/enigma_algo.png, id=57, 500.62032pt x 694.84593pt>
 File: img/enigma_algo.png Graphic file (type png)
 <use img/enigma_algo.png>
 Package pdftex.def Info: img/enigma_algo.png  used on input line 27.
 (pdftex.def)             Requested size: 375.57782pt x 521.3134pt.
-[6
+[5
 
  <./img/enigma_algo.png>]
 {\cyrillictext \CYRG \cyrl \cyra \cyrv \cyra } 3.
+<img/example1.png, id=67, 164.48953pt x 20.32594pt>
+File: img/example1.png Graphic file (type png)
+<use img/example1.png>
+Package pdftex.def Info: img/example1.png  used on input line 37.
+(pdftex.def)             Requested size: 328.6279pt x 40.6133pt.
+<img/example2.png, id=68, 582.67688pt x 125.71968pt>
+File: img/example2.png Graphic file (type png)
+<use img/example2.png>
+Package pdftex.def Info: img/example2.png  used on input line 40.
+(pdftex.def)             Requested size: 469.47049pt x 101.29715pt.
+<img/example3.png, id=69, 559.7161pt x 380.92313pt>
+File: img/example3.png Graphic file (type png)
+<use img/example3.png>
+Package pdftex.def Info: img/example3.png  used on input line 43.
+(pdftex.def)             Requested size: 469.47049pt x 319.51987pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[6
+
+ <./img/example1.png> <./img/example2.png>]
+<img/example4.png, id=80, 523.5811pt x 132.495pt>
+File: img/example4.png Graphic file (type png)
+<use img/example4.png>
+Package pdftex.def Info: img/example4.png  used on input line 46.
+(pdftex.def)             Requested size: 469.47049pt x 118.80566pt.
+ [7 <./img/example3.png> <./img/example4.png>]
+{\cyrillictext \CYRG \cyrl \cyra \cyrv \cyra } 4.
 (C:\Users\ck4te\AppData\Local\Programs\MiKTeX\tex/latex/listings\lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
@@ -2111,11 +2139,11 @@ File: lstlang2.sty 2023/02/27 1.9 listings language file
 File: lstlang3.sty 2023/02/27 1.9 listings language file
 )
 Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 31.
+nput line 53.
 LaTeX Font Info:    Font shape `T2A/Tempora-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 31.
+(Font)              scaled to size 12.0pt on input line 53.
 LaTeX Font Info:    Trying to load font information for T2A+cmtt on input line 
-31.
+53.
 
 (C:\Users\ck4te\AppData\Local\Programs\MiKTeX\tex/latex/cyrillic\t2acmtt.fd
 File: t2acmtt.fd 2001/08/11 v1.0a Computer Modern Cyrillic font definitions
@@ -2125,12 +2153,21 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-[7
+[8
 
-]) [8]
+] [9] [10] [11]) [12]
 \openout2 = `07_conclusion.aux'.
 
- (07_conclusion.tex) [9
+ (07_conclusion.tex) [13
+
+
+
+]
+\openout2 = `links.aux'.
+
+ (links.tex (report.bbl))
+[14
+
 
 
 
@@ -2152,7 +2189,7 @@ F.
 )
 LaTeX Font Info:    Font shape `T1/Tempora-TLF/m/n' will be
 (Font)              scaled to size 14.4pt on input line 9.
- (02_intro.aux) (03_analytic_part.aux) (07_conclusion.aux))
+ (02_intro.aux) (03_analytic_part.aux) (07_conclusion.aux) (links.aux))
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
@@ -2162,23 +2199,28 @@ L3 programming layer <2024-01-04>
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 19B0DF6A34E3C3003A0837CAA79117E9;1607.
+(rerunfilecheck)             Checksum: 70771AD99EAC323D3F676B034206D8C2;2323.
  ) 
 Here is how much of TeX's memory you used:
- 25126 strings out of 474486
- 427560 string characters out of 5743755
- 2118542 words of memory out of 5000000
- 46808 multiletter control sequences out of 15000+600000
- 593737 words of font info for 95 fonts, out of 8000000 for 9000
+ 25381 strings out of 474486
+ 432228 string characters out of 5743755
+ 2165542 words of memory out of 5000000
+ 46925 multiletter control sequences out of 15000+600000
+ 593986 words of font info for 96 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 82i,6n,122p,1005b,2299s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\ck4te\AppData\Local\MiKTeX\fonts/pk/ljfour/lh/lh-t2a/dpi600\latt12
-00.pk><C:/Users/ck4te/AppData/Local/Programs/MiKTeX/fonts/type1/public/tempora/
-Tempora-Bold.pfb><C:/Users/ck4te/AppData/Local/Programs/MiKTeX/fonts/type1/publ
-ic/tempora/Tempora-Regular.pfb>
-Output written on report.pdf (8 pages, 1303677 bytes).
+ 82i,6n,122p,1005b,2529s stack positions out of 10000i,1000n,20000p,200000b,200000s
+
+pdfTeX warning (dest): name{lstnumber.4.1.181} has been referenced but does not
+ exist, replaced by a fixed one
+
+ <C:\Users\ck4te\AppData\Local\MiKTeX\fonts/pk/ljfour/lh/lh-t2a/dpi600\latt1440
+.pk> <C:\Users\ck4te\AppData\Local\MiKTeX\fonts/pk/ljfour/lh/lh-t2a/dpi600\latt
+1200.pk><C:/Users/ck4te/AppData/Local/Programs/MiKTeX/fonts/type1/public/tempor
+a/Tempora-Bold.pfb><C:/Users/ck4te/AppData/Local/Programs/MiKTeX/fonts/type1/pu
+blic/tempora/Tempora-Regular.pfb>
+Output written on report.pdf (13 pages, 1500038 bytes).
 PDF statistics:
- 231 PDF objects out of 1000 (max. 8388607)
- 85 named destinations out of 1000 (max. 500000)
- 23115 words of extra memory for PDF output out of 24883 (max. 10000000)
+ 459 PDF objects out of 1000 (max. 8388607)
+ 211 named destinations out of 1000 (max. 500000)
+ 23151 words of extra memory for PDF output out of 24883 (max. 10000000)
 
