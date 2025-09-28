@@ -72,7 +72,7 @@ func main() {
 				continue
 			}
 
-			outputFile := inputFile + ".encrypted"
+			outputFile := inputFile + ".encrypted.zip"
 			err = rsa.EncryptFile(inputFile, outputFile)
 			if err != nil {
 				fmt.Printf("Ошибка шифрования: %v\n", err)
@@ -92,7 +92,7 @@ func main() {
 				continue
 			}
 
-			outputFile := inputFile + ".decrypted"
+			outputFile := inputFile + ".decrypted.zip"
 			err := rsa.DecryptFile(inputFile, outputFile)
 			if err != nil {
 				fmt.Printf("Ошибка расшифровки: %v\n", err)
