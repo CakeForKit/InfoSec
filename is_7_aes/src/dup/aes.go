@@ -9,7 +9,6 @@ import (
 	"strconv"
 )
 
-// AES константы
 const (
 	AESBlockSize   = 16
 	AESStateDim    = 4
@@ -22,7 +21,6 @@ const (
 	GFMSBMask      = 0x80
 )
 
-// Типы ключей
 type AESKeySize int
 
 const (
@@ -31,7 +29,6 @@ const (
 	AESKeySize256 AESKeySize = 32
 )
 
-// Ошибки AES
 type AESError int
 
 const (
@@ -56,7 +53,6 @@ func (e AESError) String() string {
 	}
 }
 
-// S-Box таблица
 var sbox = [256]byte{
 	0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
 	0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0,
@@ -76,7 +72,6 @@ var sbox = [256]byte{
 	0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16,
 }
 
-// Обратная S-Box таблица
 var rsbox = [256]byte{
 	0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb,
 	0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f, 0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb,
@@ -96,17 +91,14 @@ var rsbox = [256]byte{
 	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
 }
 
-// Rcon таблица
 var rcon = [32]byte{
 	0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36,
 	0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97,
 	0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39,
 }
 
-// Состояние AES
 type AESState [AESStateDim][AESStateDim]byte
 
-// Вспомогательные функции
 func secureZeroMemory(data []byte) {
 	for i := range data {
 		data[i] = 0
@@ -132,7 +124,6 @@ func keyScheduleCore(word []byte, iteration byte) {
 	word[0] ^= rcon[iteration]
 }
 
-// Расширение ключа
 func aesExpandKey(key []byte, keySize AESKeySize) ([]byte, error) {
 	var numRounds int
 	switch keySize {
@@ -177,7 +168,6 @@ func aesExpandKey(key []byte, keySize AESKeySize) ([]byte, error) {
 	return expandedKey, nil
 }
 
-// Преобразования AES
 func subBytes(state *AESState) {
 	for r := 0; r < AESStateDim; r++ {
 		for c := 0; c < AESStateDim; c++ {
@@ -297,7 +287,6 @@ func addRoundKey(state *AESState, roundKey []byte) {
 	}
 }
 
-// Основные функции шифрования/дешифрования
 func aesEncryptBlock(plaintext []byte, key []byte, keySize AESKeySize) ([]byte, error) {
 	if len(plaintext) != AESBlockSize {
 		return nil, errors.New("plaintext must be 16 bytes")
@@ -328,7 +317,6 @@ func aesEncryptBlock(plaintext []byte, key []byte, keySize AESKeySize) ([]byte, 
 		}
 	}
 
-	// Шифрование
 	addRoundKey(&state, expandedKey)
 	for round := 1; round < numRounds; round++ {
 		subBytes(&state)
@@ -380,7 +368,6 @@ func aesDecryptBlock(ciphertext []byte, key []byte, keySize AESKeySize) ([]byte,
 		}
 	}
 
-	// Дешифрование
 	addRoundKey(&state, expandedKey[AESBlockSize*numRounds:])
 	for round := numRounds; round > 1; round-- {
 		invShiftRows(&state)
@@ -402,7 +389,6 @@ func aesDecryptBlock(ciphertext []byte, key []byte, keySize AESKeySize) ([]byte,
 	return plaintext, nil
 }
 
-// Функции для работы с файлами
 func encryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) error {
 	inputFile, err := os.Open(inputPath)
 	if err != nil {
@@ -416,13 +402,12 @@ func encryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) e
 	}
 	defer outputFile.Close()
 
-	// Генерируем случайный IV (Initialization Vector)
+	// IV (Initialization Vector)
 	iv := make([]byte, AESBlockSize)
 	if _, err := rand.Read(iv); err != nil {
 		return err
 	}
 
-	// Записываем IV в начало файла
 	if _, err := outputFile.Write(iv); err != nil {
 		return err
 	}
@@ -441,7 +426,6 @@ func encryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) e
 			break
 		}
 
-		// Дополнение PKCS7 для последнего блока
 		if n < AESBlockSize {
 			padding := byte(AESBlockSize - n)
 			for i := n; i < AESBlockSize; i++ {
@@ -449,7 +433,6 @@ func encryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) e
 			}
 		}
 
-		// Режим CBC: XOR с предыдущим зашифрованным блоком
 		for i := 0; i < AESBlockSize; i++ {
 			buffer[i] ^= previousBlock[i]
 		}
@@ -482,7 +465,6 @@ func decryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) e
 	}
 	defer outputFile.Close()
 
-	// Читаем IV из начала файла
 	iv := make([]byte, AESBlockSize)
 	if _, err := inputFile.Read(iv); err != nil {
 		return err
@@ -517,14 +499,12 @@ func decryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) e
 			return err
 		}
 
-		// Режим CBC: XOR с предыдущим зашифрованным блоком
 		for i := 0; i < AESBlockSize; i++ {
 			decryptedBlock[i] ^= previousBlock[i]
 		}
 
 		copy(previousBlock, buffer)
 
-		// Обработка дополнения для последнего блока
 		bytesToWrite := AESBlockSize
 		if inputFile, err := inputFile.Seek(0, io.SeekCurrent); err == nil {
 			if inputFile == fileSize {
@@ -543,7 +523,6 @@ func decryptFile(inputPath, outputPath string, key []byte, keySize AESKeySize) e
 	return nil
 }
 
-// ---------------------------------------------------------------------------------------
 func generateKey(keySize AESKeySize) ([]byte, error) {
 	key := make([]byte, int(keySize))
 	if _, err := rand.Read(key); err != nil {
@@ -553,7 +532,7 @@ func generateKey(keySize AESKeySize) ([]byte, error) {
 }
 
 func saveKeyToFile(key []byte, filename string) error {
-	return os.WriteFile(filename, key, 0600) // Только владелец может читать/писать
+	return os.WriteFile(filename, key, 0600)
 }
 
 func loadKeyFromFile(filename string) ([]byte, error) {
@@ -562,7 +541,6 @@ func loadKeyFromFile(filename string) ([]byte, error) {
 		return nil, err
 	}
 
-	// Проверяем размер ключа
 	switch len(key) {
 	case 16, 24, 32:
 		return key, nil
@@ -576,10 +554,6 @@ func printUsage() {
 	fmt.Println("  Шифрование: go run aes.go encrypt <файл_ключа> <входной_файл> <выходной_файл>")
 	fmt.Println("  Дешифрование: go run aes.go decrypt <файл_ключа> <входной_файл> <выходной_файл>")
 	fmt.Println("  Генерация ключа: go run aes.go genkey <файл_ключа> [128|192|256]")
-	fmt.Println("\nПримеры:")
-	fmt.Println("  go run aes.go genkey mykey.key 256")
-	fmt.Println("  go run aes.go encrypt mykey.txt secret.txt secret.enc")
-	fmt.Println("  go run aes.go decrypt mykey.txt secret.enc decrypted.txt")
 }
 
 func main() {
@@ -613,7 +587,7 @@ func main() {
 			fmt.Println("Использование: go run aes.go genkey <файл_ключа> [128|192|256]")
 			os.Exit(1)
 		}
-		keySize := AESKeySize256 // По умолчанию 256 бит
+		keySize := AESKeySize256
 		if len(os.Args) == 4 {
 			size, err := strconv.Atoi(os.Args[3])
 			if err != nil {
@@ -649,14 +623,11 @@ func main() {
 func encryptCommand(keyFile, inputFile, outputFile string) {
 	fmt.Printf("Шифрование файла: %s -> %s\n", inputFile, outputFile)
 
-	// Загрузка ключа
 	key, err := loadKeyFromFile(keyFile)
 	if err != nil {
 		fmt.Printf("Ошибка загрузки ключа: %v\n", err)
 		os.Exit(1)
 	}
-
-	// Определение размера ключа
 	var keySize AESKeySize
 	switch len(key) {
 	case 16:
@@ -672,19 +643,16 @@ func encryptCommand(keyFile, inputFile, outputFile string) {
 
 	fmt.Printf("Используется ключ: %s (%d бит)\n", keyFile, keySize*8)
 
-	// Проверка существования входного файла
 	if _, err := os.Stat(inputFile); os.IsNotExist(err) {
 		fmt.Printf("Ошибка: Входной файл не существует: %s\n", inputFile)
 		os.Exit(1)
 	}
 
-	// Шифрование
 	if err := encryptFile(inputFile, outputFile, key, keySize); err != nil {
 		fmt.Printf("Ошибка шифрования: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Получение статистики
 	inputInfo, _ := os.Stat(inputFile)
 	outputInfo, _ := os.Stat(outputFile)
 
@@ -696,14 +664,12 @@ func encryptCommand(keyFile, inputFile, outputFile string) {
 func decryptCommand(keyFile, inputFile, outputFile string) {
 	fmt.Printf("Дешифрование файла: %s -> %s\n", inputFile, outputFile)
 
-	// Загрузка ключа
 	key, err := loadKeyFromFile(keyFile)
 	if err != nil {
 		fmt.Printf("Ошибка загрузки ключа: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Определение размера ключа
 	var keySize AESKeySize
 	switch len(key) {
 	case 16:
@@ -719,19 +685,16 @@ func decryptCommand(keyFile, inputFile, outputFile string) {
 
 	fmt.Printf("Используется ключ: %s (%d бит)\n", keyFile, keySize*8)
 
-	// Проверка существования входного файла
 	if _, err := os.Stat(inputFile); os.IsNotExist(err) {
 		fmt.Printf("Ошибка: Входной файл не существует: %s\n", inputFile)
 		os.Exit(1)
 	}
 
-	// Дешифрование
 	if err := decryptFile(inputFile, outputFile, key, keySize); err != nil {
 		fmt.Printf("Ошибка дешифрования: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Получение статистики
 	inputInfo, _ := os.Stat(inputFile)
 	outputInfo, _ := os.Stat(outputFile)
 
@@ -743,7 +706,6 @@ func decryptCommand(keyFile, inputFile, outputFile string) {
 func genkeyCommand(keyFile string, keySize AESKeySize) {
 	fmt.Printf("Генерация ключа %d бит в файл: %s\n", keySize*8, keyFile)
 
-	// Проверка, не существует ли уже файл
 	if _, err := os.Stat(keyFile); err == nil {
 		fmt.Printf("Внимание: Файл %s уже существует. Перезаписать? (y/N): ", keyFile)
 		var response string
@@ -754,14 +716,12 @@ func genkeyCommand(keyFile string, keySize AESKeySize) {
 		}
 	}
 
-	// Генерация ключа
 	key, err := generateKey(keySize)
 	if err != nil {
 		fmt.Printf("Ошибка генерации ключа: %v\n", err)
 		os.Exit(1)
 	}
 
-	// Сохранение ключа
 	if err := saveKeyToFile(key, keyFile); err != nil {
 		fmt.Printf("Ошибка сохранения ключа: %v\n", err)
 		os.Exit(1)
@@ -769,88 +729,5 @@ func genkeyCommand(keyFile string, keySize AESKeySize) {
 
 	fmt.Printf("Ключ успешно сгенерирован и сохранен в: %s\n", keyFile)
 	fmt.Printf("Размер ключа: %d байт (%d бит)\n", len(key), keySize*8)
-	fmt.Printf("SHA256 (первые 16 байт): %x...\n", key[:16])
-	fmt.Println("\n⚠️  ВАЖНО: Храните ключ в безопасном месте и никому его не передавайте!")
-}
-
-// // Дополнительная функция для получения информации о файле
-// func getFileInfo(filename string) (string, error) {
-// 	info, err := os.Stat(filename)
-// 	if err != nil {
-// 		return "", err
-// 	}
-// 	return fmt.Sprintf("%s (%d байт, модифицирован: %s)",
-// 		filename, info.Size(), info.ModTime().Format("2006-01-02 15:04:05")), nil
-// }
-
-// Пример использования
-func main2() {
-	// Генерация ключа
-	key := make([]byte, int(AESKeySize256))
-	if _, err := rand.Read(key); err != nil {
-		fmt.Printf("Error generating key: %v\n", err)
-		return
-	}
-
-	fmt.Printf("Generated key: %x\n", key)
-
-	// Пример шифрования/дешифрования одного блока
-	plaintext := []byte("Hello, AES 1234!") // 16 байт
-	fmt.Printf("Original text: %s\n", string(plaintext))
-
-	encrypted, err := aesEncryptBlock(plaintext, key, AESKeySize256)
-	if err != nil {
-		fmt.Printf("Encryption error: %v\n", err)
-		return
-	}
-	fmt.Printf("Encrypted: %x\n", encrypted)
-
-	decrypted, err := aesDecryptBlock(encrypted, key, AESKeySize256)
-	if err != nil {
-		fmt.Printf("Decryption error: %v\n", err)
-		return
-	}
-	fmt.Printf("Decrypted: %s\n", string(decrypted))
-
-	// Пример работы с файлами
-	inputFile := "example.txt"
-	encryptedFile := "example.enc"
-	decryptedFile := "example_decrypted.txt"
-
-	// Создаем тестовый файл
-	if err := os.WriteFile(inputFile, []byte("This is a test file content for AES encryption demonstration!"), 0644); err != nil {
-		fmt.Printf("Error creating test file: %v\n", err)
-		return
-	}
-
-	// Шифруем файл
-	fmt.Println("\nEncrypting file...")
-	if err := encryptFile(inputFile, encryptedFile, key, AESKeySize256); err != nil {
-		fmt.Printf("File encryption error: %v\n", err)
-		return
-	}
-	fmt.Println("File encrypted successfully!")
-
-	// Дешифруем файл
-	fmt.Println("Decrypting file...")
-	if err := decryptFile(encryptedFile, decryptedFile, key, AESKeySize256); err != nil {
-		fmt.Printf("File decryption error: %v\n", err)
-		return
-	}
-	fmt.Println("File decrypted successfully!")
-
-	// Проверяем содержимое
-	originalContent, _ := os.ReadFile(inputFile)
-	decryptedContent, _ := os.ReadFile(decryptedFile)
-
-	if string(originalContent) == string(decryptedContent) {
-		fmt.Println("✓ Encryption/decryption verified successfully!")
-	} else {
-		fmt.Println("✗ Encryption/decryption verification failed!")
-	}
-
-	// Очистка
-	os.Remove(inputFile)
-	os.Remove(encryptedFile)
-	os.Remove(decryptedFile)
+	fmt.Printf("SHA256 (первые 16 байт): %x\n", key)
 }
