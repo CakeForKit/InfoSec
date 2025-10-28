@@ -1,1 +1,0 @@
-rm -f *.aux *.log *.bbl *.bcf *.blg *.out *.xml *.gz *.toc *.tns *.Identifier
